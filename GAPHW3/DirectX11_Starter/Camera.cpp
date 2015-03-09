@@ -12,7 +12,23 @@ Camera::Camera(XMFLOAT4X4 v, XMFLOAT4X4 proj, XMFLOAT3 pos){
 	moveIncrement = .001f;
 }
 
+Camera::Camera(XMVECTOR pos, XMVECTOR dir, float aspectRatio){
+	XMVECTOR up = XMVectorSet(0, 1, 0, 0);
+	XMMATRIX V = XMMatrixLookToLH(pos, dir, up);
+	XMStoreFloat4x4(&view, XMMatrixTranspose(V));
+	XMMATRIX P = XMMatrixPerspectiveFovLH(
+		0.25f * 3.1415926535f,		// Field of View Angle
+		aspectRatio,				// Aspect ratio
+		0.1f,						// Near clip plane distance
+		100.0f);					// Far clip plane distance
+	XMStoreFloat4x4(&projection, XMMatrixTranspose(P));
+	XMStoreFloat3(&position, pos);
+	XMStoreFloat3(&direction, dir);
 
+	xRot = 0.0f;
+	yRot = 0.0f;
+	moveIncrement = .001f;
+}
 Camera::~Camera()
 {
 }
@@ -60,9 +76,9 @@ void Camera::Update(){
 	//left
 	if (GetAsyncKeyState('A') & 0x8000) { 
 		leftVector = XMVector3Cross(afterRot, tempYunit);
-		position.x += XMVectorGetIntX(leftVector)*moveIncrement;
-		position.y += XMVectorGetIntY(leftVector)*moveIncrement;
-		position.z += XMVectorGetIntZ(leftVector)*moveIncrement;
+		position.x += (XMVectorGetIntX(leftVector)*moveIncrement);
+		position.y += (XMVectorGetIntY(leftVector)*moveIncrement);
+		position.z += (XMVectorGetIntZ(leftVector)*moveIncrement);
 	}
 	// backwards
 	if (GetAsyncKeyState('S') & 0x8000) { 
@@ -73,9 +89,9 @@ void Camera::Update(){
 	// right
 	if (GetAsyncKeyState('D') & 0x8000) { 
 		rightVector = -leftVector;
-		position.x += XMVectorGetIntX(rightVector)*moveIncrement;
-		position.y += XMVectorGetIntY(rightVector)*moveIncrement;
-		position.z += XMVectorGetIntZ(rightVector)*moveIncrement;
+		position.x += (XMVectorGetIntX(rightVector)*moveIncrement);
+		position.y += (XMVectorGetIntY(rightVector)*moveIncrement);
+		position.z += (XMVectorGetIntZ(rightVector)*moveIncrement);
 	}
 	// up
 	if (GetAsyncKeyState('X') & 0x8000) {
@@ -103,6 +119,11 @@ void Camera::rotateY(float diff){
 	yRot += diff;
 }
 
-void Camera::updateProjectionMatrix(XMFLOAT4X4 newProj){
-	projection = newProj;
+void Camera::updateProjectionMatrix(float aspectRatio){
+	XMMATRIX P = XMMatrixPerspectiveFovLH(
+		0.25f * 3.1415926535f,
+		aspectRatio,
+		0.1f,
+		100.0f);
+	XMStoreFloat4x4(&projection, XMMatrixTranspose(P));
 }

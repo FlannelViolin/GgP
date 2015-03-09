@@ -2,6 +2,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include "Mesh.h"
+#include "Material.h"
 using namespace DirectX;
 
 struct VertexShaderConstantBufferLayout
@@ -17,6 +18,7 @@ private:
 	XMFLOAT4X4 worldMatrix;
 	XMFLOAT3 pos, rot, scale;
 	Mesh* mesh;
+	Material* mat;
 	//ID3D11Buffer* vsConstantBuffer;
 	VertexShaderConstantBufferLayout data;
 

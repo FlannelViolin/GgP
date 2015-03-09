@@ -170,6 +170,17 @@ void MyDemoGame::CreateGeometryBuffers()
 // vertex data to the device
 void MyDemoGame::LoadShadersAndInputLayout()
 {
+
+
+	pShader = new SimplePixelShader(device, deviceContext);
+
+	vShader = new SimpleVertexShader(device, deviceContext); 
+
+	pShader->LoadShaderFile(L"PixelShader.cso");
+
+	vShader->LoadShaderFile(L"VertexShader.cso");
+
+
 	// Set up the vertex layout description
 	// This has to match the vertex input layout in the vertex shader
 	// We can't set up the input layout yet since we need the actual vert shader
@@ -235,26 +246,28 @@ void MyDemoGame::InitializeCameraMatrices()
 	// Create the View matrix
 	// In an actual game, update this when the camera moves (every frame)
 	XMVECTOR position = XMVectorSet(0, 0, -5, 0);
-	XMVECTOR target = XMVectorSet(0, 0, 0, 0);
+	//XMVECTOR target = XMVectorSet(0, 0, 0, 0);
 	XMVECTOR direction = XMVectorSet(0, 0, 1, 0);
-	XMVECTOR up = XMVectorSet(0, 1, 0, 0);
-	XMMATRIX V = XMMatrixLookToLH(position, direction, up); // View matrix creation:
+	//XMVECTOR up = XMVectorSet(0, 1, 0, 0);
+	//XMMATRIX V = XMMatrixLookToLH(position, direction, up); // View matrix creation:
 	// Looks at a "target" from
 	// a particular "position"
-	XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V));
+	//XMStoreFloat4x4(&viewMatrix, XMMatrixTranspose(V));
 
 	// Create the Projection matrix
 	// This should match the window's aspect ratio, and also update anytime
 	// the window resizes (which is already happening in OnResize() below)
-	XMMATRIX P = XMMatrixPerspectiveFovLH(
+	/*XMMATRIX P = XMMatrixPerspectiveFovLH(
 		0.25f * 3.1415926535f,		// Field of View Angle
 		AspectRatio(),				// Aspect ratio
 		0.1f,						// Near clip plane distance
 		100.0f);					// Far clip plane distance
 	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P));
-	XMStoreFloat3(&cameraPos, position);
+	XMStoreFloat3(&cameraPos, position); */
 
-	camera = new Camera(viewMatrix, projectionMatrix, cameraPos);
+
+	//camera = new Camera(viewMatrix, projectionMatrix, cameraPos);
+	camera = new Camera(position, direction, AspectRatio());
 }
 
 #pragma endregion
@@ -268,12 +281,13 @@ void MyDemoGame::OnResize()
 	DirectXGame::OnResize();
 
 	 //Update our projection matrix since the window size changed
-	XMMATRIX P = XMMatrixPerspectiveFovLH(
+	/*XMMATRIX P = XMMatrixPerspectiveFovLH(
 		0.25f * 3.1415926535f,
 		AspectRatio(),
 		0.1f,
 		100.0f);
-	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P));
+	XMStoreFloat4x4(&projectionMatrix, XMMatrixTranspose(P));*/
+	if (camera != NULL) camera->updateProjectionMatrix(AspectRatio());
 }
 #pragma endregion
 
@@ -283,7 +297,7 @@ void MyDemoGame::OnResize()
 void MyDemoGame::UpdateScene(float dt)
 {
 	// Take input, update game logic, etc.
-	camera->Update();
+	if (camera!=NULL) camera->Update();
 }
 
 // Clear the screen, redraw everything, present

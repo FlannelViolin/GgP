@@ -6,6 +6,8 @@
 #include "Mesh.h"
 #include "Entity.h"
 #include "Camera.h"
+#include "SimpleShader.h"
+
 
 // Include run-time memory checking in debug builds
 #if defined(DEBUG) || defined(_DEBUG)
@@ -68,6 +70,9 @@ private:
 
 	Camera* camera;
 	XMFLOAT3 cameraPos;
+
+	SimpleVertexShader* vShader;
+	SimplePixelShader* pShader;
 
 	// Our basic shaders for this example
 	ID3D11PixelShader* pixelShader;

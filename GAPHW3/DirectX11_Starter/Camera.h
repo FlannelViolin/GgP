@@ -16,6 +16,7 @@ private:
 
 public:
 	Camera(XMFLOAT4X4 view, XMFLOAT4X4 proj, XMFLOAT3 pos);
+	Camera(XMVECTOR position, XMVECTOR direction, float aspectRatio);
 	~Camera();
 
 	void Update();
@@ -26,6 +27,6 @@ public:
 	void rotateX(float diff);
 	void rotateY(float diff);
 
-	void updateProjectionMatrix(XMFLOAT4X4 newProj);
+	void updateProjectionMatrix(float aspectRatio);
 };
 
