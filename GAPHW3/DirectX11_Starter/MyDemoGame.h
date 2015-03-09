@@ -73,15 +73,15 @@ private:
 
 	SimpleVertexShader* vShader;
 	SimplePixelShader* pShader;
-
+	
 	// Our basic shaders for this example
-	ID3D11PixelShader* pixelShader;
-	ID3D11VertexShader* vertexShader;
+	/*ID3D11PixelShader* pixelShader;
+	ID3D11VertexShader* vertexShader;*/
 
 	// A few more odds and ends we'll need
-	ID3D11InputLayout* inputLayout;
+	/*ID3D11InputLayout* inputLayout;
 	ID3D11Buffer* vsConstantBuffer;
-	VertexShaderConstantBufferLayout dataToSendToVSConstantBuffer;
+	VertexShaderConstantBufferLayout dataToSendToVSConstantBuffer;*/
 
 	// The matrices to go from model space
 	// to screen space

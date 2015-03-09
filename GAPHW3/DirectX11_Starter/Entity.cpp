@@ -70,6 +70,10 @@ void Entity::setRotation(float x, float y, float z){ rot.x = x; rot.y = y; rot.z
 void Entity::setScale(float x, float y, float z){ scale.x = x; scale.y = y; scale.z = z; }
 
 
+void Entity::setMaterial(Material* mat){
+	material = mat;
+}
+
 
 
 boolean Entity::updateWorldMatrix(){
@@ -90,17 +94,18 @@ boolean Entity::updateWorldMatrix(){
 	return true;
 }
 
-boolean Entity::Draw(ID3D11DeviceContext* ctx, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix, ID3D11Buffer* vsConstantBuffer){
+boolean Entity::Draw(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix){
 	
 	updateWorldMatrix();
 
 
-	data.world = worldMatrix;
-	data.view = viewMatrix;
-	data.projection = projectMatrix;
+	material->getVertexShader()->SetFloat3("position", pos);
+	material->getVertexShader()->SetMatrix4x4("world", worldMatrix);
+	material->getVertexShader()->SetMatrix4x4("view", viewMatrix);
+	material->getVertexShader()->SetMatrix4x4("projection", projectMatrix);
 
-	
-	ctx->UpdateSubresource(
+	material->getVertexShader()->SetShader();
+	/*ctx->UpdateSubresource(
 		vsConstantBuffer,
 		0,
 		NULL,
@@ -127,7 +132,7 @@ boolean Entity::Draw(ID3D11DeviceContext* ctx, XMFLOAT4X4 viewMatrix, XMFLOAT4X4
 	ctx->DrawIndexed(
 		mesh->getIndexCount(),	// The number of indices we're using in this draw
 		0,
-		0);
+		0);*/
 
 	return true;
 }

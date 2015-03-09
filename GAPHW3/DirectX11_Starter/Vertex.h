@@ -4,6 +4,7 @@
 using namespace DirectX;
 struct Vertex
 {
-	XMFLOAT3 Position;
-	XMFLOAT4 Color;
+	XMFLOAT3 position;
+	XMFLOAT3 normal;
+	XMFLOAT2 uv;
 };

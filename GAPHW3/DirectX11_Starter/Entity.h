@@ -18,9 +18,8 @@ private:
 	XMFLOAT4X4 worldMatrix;
 	XMFLOAT3 pos, rot, scale;
 	Mesh* mesh;
-	Material* mat;
+	Material* material;
 	//ID3D11Buffer* vsConstantBuffer;
-	VertexShaderConstantBufferLayout data;
 
 public:
 	Entity(Mesh * m, XMFLOAT3 p, XMFLOAT3 r, XMFLOAT3 s);
@@ -39,6 +38,8 @@ public:
 	void setPosition(float x, float y, float z);
 	void setRotation(float x, float y, float z);
 	void setScale(float x, float y, float z);
+	void setMaterial(Material* mat);
+
 
 	// pass in values, and positions, id love to pass in a reference to the vector to be changed.
 	void changePositionValues(float* values, int* positions);
@@ -50,7 +51,7 @@ public:
 
 	boolean updateWorldMatrix();
 
-	boolean Draw(ID3D11DeviceContext* ctx, XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix, ID3D11Buffer* vsConstantBuffer);
+	boolean Draw( XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix);
 		 
 		
 	Entity();

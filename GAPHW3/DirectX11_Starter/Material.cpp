@@ -1,7 +1,7 @@
 #include "Material.h"
 
 
-Material::Material(ID3D11PixelShader* p, ID3D11VertexShader* v)
+Material::Material(SimplePixelShader* p, SimpleVertexShader* v)
 {
 	pShade = p;
 	vShade = v;
@@ -13,9 +13,9 @@ Material::~Material()
 }
 
 
-ID3D11PixelShader* Material::getPixelShader(){
+SimplePixelShader* Material::getPixelShader(){
 	return pShade;
 }
-ID3D11VertexShader* Material::getVertexShader(){
+SimpleVertexShader* Material::getVertexShader(){
 	return vShade;
 }

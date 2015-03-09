@@ -40,7 +40,7 @@ Mesh::Mesh()
 
 Mesh::~Mesh()
 {
-	ReleaseMacro(vertexBuffer);
+	if (vertexBuffer){ ReleaseMacro(vertexBuffer); }
 	ReleaseMacro(indexBuffer);
 
 }

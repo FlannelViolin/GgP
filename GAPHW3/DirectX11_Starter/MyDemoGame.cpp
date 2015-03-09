@@ -64,10 +64,10 @@ MyDemoGame::~MyDemoGame()
 	// Release all of the D3D stuff that's still hanging out
 	/*ReleaseMacro(vertexBuffer);
 	ReleaseMacro(indexBuffer);*/
-	ReleaseMacro(vertexShader);
+	/*ReleaseMacro(vertexShader);
 	ReleaseMacro(pixelShader);
 	ReleaseMacro(vsConstantBuffer);
-	ReleaseMacro(inputLayout);
+	ReleaseMacro(inputLayout);*/
 	delete(mesh1);
 	delete(mesh2);
 	delete(mesh3);
@@ -124,12 +124,12 @@ void MyDemoGame::CreateGeometryBuffers()
 	// Set up the vertices we want to put into the Vertex Buffer
 	Vertex vertices1[] = 
 	{
-		{ XMFLOAT3(+0.0f, +1.0f, +0.0f), red },
-		{ XMFLOAT3(-.75f, 0.0f, +0.0f), green },
-		{ XMFLOAT3(.75f, 0.0f, +0.0f), blue },
+		{ XMFLOAT3(+0.0f, +1.0f, +0.0f),XMFLOAT3(0,0,-1),XMFLOAT2(0,0) },
+		{ XMFLOAT3(-.75f, 0.0f, +0.0f), XMFLOAT3(0, 0, -1), XMFLOAT2(0, 0) },
+		{ XMFLOAT3(.75f, 0.0f, +0.0f), XMFLOAT3(0, 0, -1), XMFLOAT2(0, 0) },
 
 	};
-	Vertex vertices2[] = 
+	/*Vertex vertices2[] = 
 	{
 		{ XMFLOAT3(-.75f, 0.0f, +0.0f), green },
 		{ XMFLOAT3(-1.5f, -1.0f, +0.0f), blue },
@@ -142,7 +142,7 @@ void MyDemoGame::CreateGeometryBuffers()
 		{ XMFLOAT3(0.0f, -1.0f, +0.0f), red },
 		{ XMFLOAT3(+1.5f, -1.0f, +0.0f), green },
 
-	};
+	};*/
 
 	// Set up the indices of the vertices (necessary for indexed drawing)
 	UINT indices1[] = { 0, 2, 1 };
@@ -151,16 +151,18 @@ void MyDemoGame::CreateGeometryBuffers()
 
 	// what do we pass in for the numbers?
 	mesh1 = new Mesh(vertices1, 3, indices1, 3, device);
-	mesh2 = new Mesh(vertices2, 3, indices1, 3, device);
-	mesh3 = new Mesh(vertices3, 3, indices1, 3, device);
+	/*mesh2 = new Mesh(vertices2, 3, indices1, 3, device);
+	mesh3 = new Mesh(vertices3, 3, indices1, 3, device);*/
 
 	XMFLOAT3 ones = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	XMFLOAT3 zeroes = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 tryScale = XMFLOAT3(1.5f, 1.5f, 0.0f);
 	Entity1 = new Entity(mesh1, zeroes,zeroes, ones);
+	Entity1->setMaterial(new Material(pShader, vShader));
 
+	/*
 	Entity2 = new Entity(mesh2, zeroes, zeroes, ones);
-	Entity3 = new Entity(mesh1, zeroes, zeroes, ones);
+	Entity3 = new Entity(mesh1, zeroes, zeroes, ones);*/
 
 	
 }
@@ -181,17 +183,18 @@ void MyDemoGame::LoadShadersAndInputLayout()
 	vShader->LoadShaderFile(L"VertexShader.cso");
 
 
+	// OLD SHADER
 	// Set up the vertex layout description
 	// This has to match the vertex input layout in the vertex shader
 	// We can't set up the input layout yet since we need the actual vert shader
-	D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
+	/*D3D11_INPUT_ELEMENT_DESC vertexDesc[] =
 	{
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,	0, 0,	D3D11_INPUT_PER_VERTEX_DATA, 0},
 		{"COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12,	D3D11_INPUT_PER_VERTEX_DATA, 0}
-	};
+	};*/
 
 	// Load Vertex Shader --------------------------------------
-	ID3DBlob* vsBlob;
+	/*ID3DBlob* vsBlob;
 	D3DReadFileToBlob(L"VertexShader.cso", &vsBlob);
 
 	// Create the shader on the device
@@ -237,7 +240,7 @@ void MyDemoGame::LoadShadersAndInputLayout()
 	HR(device->CreateBuffer(
 		&cBufferDesc,
 		NULL,
-		&vsConstantBuffer));
+		&vsConstantBuffer));*/
 }
 
 // Initializes the matrices necessary to represent our 3D camera
@@ -317,11 +320,13 @@ void MyDemoGame::DrawScene()
 		1.0f,
 		0);
 
+
+	// OLD SHADER
 	// Set up the input assembler
 	//  - These technically don't need to be set every frame, unless you're changing the
 	//    input layout (different kinds of vertices) or the topology (different primitives)
 	//    between draws
-	deviceContext->IASetInputLayout(inputLayout);
+	/*deviceContext->IASetInputLayout(inputLayout);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 	// Set the current vertex and pixel shaders
@@ -329,29 +334,21 @@ void MyDemoGame::DrawScene()
 	//  - Once you have multiple shaders, you will need to change these
 	//    between drawing objects that will use different shaders
 	deviceContext->VSSetShader(vertexShader, NULL, 0);
-	deviceContext->PSSetShader(pixelShader, NULL, 0);
+	deviceContext->PSSetShader(pixelShader, NULL, 0);*/
 	
 
-	//drawObject(mesh1);
-
-	//drawObject(mesh2);
-	 
-	//drawObject(mesh3);
 	XMFLOAT3 changePos = Entity1->getPosition();
 	changePos.y = sin(timer.TotalTime());
 	Entity1->setPosition(changePos);
 
-	XMFLOAT3 changeRot = Entity2->getRotation();
-	changeRot.x = sin(timer.TotalTime());
-	Entity2->setRotation(changeRot);
+	/*vShader->SetFloat3("position", Entity1->getPosition());
+	vShader->SetMatrix4x4("world", worldMatrix);
+	vShader->SetMatrix4x4("view", viewMatrix);
 
-	XMFLOAT3 changeScale = Entity3->getScale();
-	changeScale.x = sin(timer.TotalTime());
-	Entity3->setScale(changeScale);
+	vShader->SetShader(true);
+	*/
+	Entity1->Draw(camera->getViewMatrix(), camera->getProjectionMatrix());
 
-	Entity1->Draw(deviceContext, camera->getViewMatrix(), camera->getProjectionMatrix(), vsConstantBuffer);
-	//Entity2->Draw(deviceContext, viewMatrix, projectionMatrix, vsConstantBuffer);
-	//Entity3->Draw(deviceContext, viewMatrix, projectionMatrix, vsConstantBuffer);
 
 
 
@@ -360,7 +357,7 @@ void MyDemoGame::DrawScene()
 	HR(swapChain->Present(0, 0));
 }
 
-void MyDemoGame::drawObject(Mesh* mesh){
+/*void MyDemoGame::drawObject(Mesh* mesh){
 	// Copy CPU-side data to a single CPU-side structure  
 	//  - Allows us to send the data to the GPU buffer in one step
 	//  - Do this PER OBJECT, before drawing it
@@ -403,7 +400,7 @@ void MyDemoGame::drawObject(Mesh* mesh){
 		mesh->getIndexCount(),	// The number of indices we're using in this draw
 		0,
 		0);
-}
+}*/
 
 #pragma endregion
 
