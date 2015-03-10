@@ -51,7 +51,7 @@ public:
 
 	boolean updateWorldMatrix();
 
-	boolean Draw( XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix);
+	boolean Draw( XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix, ID3D11DeviceContext* ctx);
 		 
 		
 	Entity();

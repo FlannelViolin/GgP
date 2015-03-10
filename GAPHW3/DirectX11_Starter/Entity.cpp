@@ -94,17 +94,19 @@ boolean Entity::updateWorldMatrix(){
 	return true;
 }
 
-boolean Entity::Draw(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix){
+boolean Entity::Draw(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix, ID3D11DeviceContext* ctx){
 	
 	updateWorldMatrix();
 
 
-	material->getVertexShader()->SetFloat3("position", pos);
+	//material->getVertexShader()->SetFloat3("position", pos);
 	material->getVertexShader()->SetMatrix4x4("world", worldMatrix);
 	material->getVertexShader()->SetMatrix4x4("view", viewMatrix);
 	material->getVertexShader()->SetMatrix4x4("projection", projectMatrix);
 
 	material->getVertexShader()->SetShader();
+
+	material->getPixelShader()->SetShader();
 	/*ctx->UpdateSubresource(
 		vsConstantBuffer,
 		0,
@@ -120,7 +122,7 @@ boolean Entity::Draw(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix){
 	ctx->VSSetConstantBuffers(
 		0,	// Corresponds to the constant buffer's register in the vertex shader
 		1,
-		&vsConstantBuffer);
+		&vsConstantBuffer);*/
 
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
@@ -128,11 +130,11 @@ boolean Entity::Draw(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix){
 	ID3D11Buffer* indexBuffer = mesh->getIndexBuffer();
 	ctx->IASetVertexBuffers(0, 1, &vertexBuffer, &stride, &offset);
 	ctx->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R32_UINT, 0);
-
+	
 	ctx->DrawIndexed(
 		mesh->getIndexCount(),	// The number of indices we're using in this draw
 		0,
-		0);*/
+		0);
 
 	return true;
 }

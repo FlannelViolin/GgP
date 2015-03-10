@@ -157,7 +157,17 @@ void MyDemoGame::CreateGeometryBuffers()
 	XMFLOAT3 ones = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	XMFLOAT3 zeroes = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 tryScale = XMFLOAT3(1.5f, 1.5f, 0.0f);
+
 	Entity1 = new Entity(mesh1, zeroes,zeroes, ones);
+
+	pShader = new SimplePixelShader(device, deviceContext);
+
+	vShader = new SimpleVertexShader(device, deviceContext);
+
+	pShader->LoadShaderFile(L"../Debug/PixelShader.cso");
+
+	vShader->LoadShaderFile(L"../Debug/VertexShader.cso");
+
 	Entity1->setMaterial(new Material(pShader, vShader));
 
 	/*
@@ -174,13 +184,6 @@ void MyDemoGame::LoadShadersAndInputLayout()
 {
 
 
-	pShader = new SimplePixelShader(device, deviceContext);
-
-	vShader = new SimpleVertexShader(device, deviceContext); 
-
-	pShader->LoadShaderFile(L"PixelShader.cso");
-
-	vShader->LoadShaderFile(L"VertexShader.cso");
 
 
 	// OLD SHADER
@@ -326,14 +329,14 @@ void MyDemoGame::DrawScene()
 	//  - These technically don't need to be set every frame, unless you're changing the
 	//    input layout (different kinds of vertices) or the topology (different primitives)
 	//    between draws
-	/*deviceContext->IASetInputLayout(inputLayout);
+	//deviceContext->IASetInputLayout(inputLayout);
 	deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	
 	// Set the current vertex and pixel shaders
 	//  - These don't need to be set every frame YET
 	//  - Once you have multiple shaders, you will need to change these
 	//    between drawing objects that will use different shaders
-	deviceContext->VSSetShader(vertexShader, NULL, 0);
+/*	deviceContext->VSSetShader(vertexShader, NULL, 0);
 	deviceContext->PSSetShader(pixelShader, NULL, 0);*/
 	
 
@@ -347,7 +350,7 @@ void MyDemoGame::DrawScene()
 
 	vShader->SetShader(true);
 	*/
-	Entity1->Draw(camera->getViewMatrix(), camera->getProjectionMatrix());
+	Entity1->Draw(camera->getViewMatrix(), camera->getProjectionMatrix(),deviceContext);
 
 
 
