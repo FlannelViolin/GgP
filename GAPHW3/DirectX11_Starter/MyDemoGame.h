@@ -19,12 +19,14 @@
 using namespace DirectX;
 
 // Vertex struct for triangles
-/*struct Vertex
+struct DirectionalLight
 {
-	XMFLOAT3 Position;
-	XMFLOAT4 Color;
+	DirectX::XMFLOAT4 AmbientColor;
+	DirectX::XMFLOAT4 DiffuseColor;
+	DirectX::XMFLOAT3 Direction;
 };
-*/
+
+
 // Struct to match vertex shader's constant buffer
 // You update one of these locally, then push it to the corresponding
 // constant buffer on the device when it needs to be updated
@@ -74,6 +76,8 @@ private:
 	SimpleVertexShader* vShader;
 	SimplePixelShader* pShader;
 	
+	DirectionalLight directionalLight1;
+	DirectionalLight directionalLight2;
 	// Our basic shaders for this example
 	/*ID3D11PixelShader* pixelShader;
 	ID3D11VertexShader* vertexShader;*/

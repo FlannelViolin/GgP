@@ -106,6 +106,9 @@ bool MyDemoGame::Init()
 	XMMATRIX W = XMMatrixIdentity();
 	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W));
 
+	directionalLight1 = { XMFLOAT4(0.1, 0.1, 0.1, 1), XMFLOAT4(.7, 0, 0, 1), XMFLOAT3(1, -1, 0) };
+	directionalLight2 = { XMFLOAT4(0.1, 0.1, 0.1, 1), XMFLOAT4(0, 0,.7, 1), XMFLOAT3(-1, 0, 1) };
+
 	// Successfully initialized
 	return true;
 }
@@ -151,14 +154,15 @@ void MyDemoGame::CreateGeometryBuffers()
 
 	// what do we pass in for the numbers?
 	mesh1 = new Mesh(vertices1, 3, indices1, 3, device);
+	mesh2 = new Mesh("../Debug/helix.obj",device);
 	/*mesh2 = new Mesh(vertices2, 3, indices1, 3, device);
-	mesh3 = new Mesh(vertices3, 3, indices1, 3, device);*/
+	/*mesh3 = new Mesh(vertices3, 3, indices1, 3, device);*/
 
 	XMFLOAT3 ones = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	XMFLOAT3 zeroes = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 tryScale = XMFLOAT3(1.5f, 1.5f, 0.0f);
 
-	Entity1 = new Entity(mesh1, zeroes,zeroes, ones);
+	Entity1 = new Entity(mesh2, zeroes,zeroes, ones);
 
 	pShader = new SimplePixelShader(device, deviceContext);
 
@@ -311,7 +315,7 @@ void MyDemoGame::DrawScene()
 {
 	timer.Tick();
 	// Background color (PURPLE in this case) for clearing 
-	const float color[4] = {0.4f, .1f, 0.75f, 0.0f};
+	const float color[4] = {0.3f, .1f, 0.1f, 0.0f};
 
 	// Clear the buffer (erases what's on the screen)
 	//  - Do this once per frame
@@ -341,15 +345,22 @@ void MyDemoGame::DrawScene()
 	
 
 	XMFLOAT3 changePos = Entity1->getPosition();
+	XMFLOAT3 changeRot = Entity1->getRotation();
 	changePos.y = sin(timer.TotalTime());
-	Entity1->setPosition(changePos);
-
+	changeRot.y = timer.TotalTime()*2;
+	//Entity1->setPosition(changePos);
+	Entity1->setRotation(changeRot);
 	/*vShader->SetFloat3("position", Entity1->getPosition());
 	vShader->SetMatrix4x4("world", worldMatrix);
 	vShader->SetMatrix4x4("view", viewMatrix);
 
 	vShader->SetShader(true);
 	*/
+	directionalLight1.Direction.y = sin(timer.TotalTime());
+	directionalLight2.Direction.x = sin(timer.TotalTime())*7;
+	Entity1->getMaterial()->getPixelShader()->SetData("light1", &directionalLight1, sizeof(DirectionalLight));
+	Entity1->getMaterial()->getPixelShader()->SetData("light2", &directionalLight2, sizeof(DirectionalLight));
+
 	Entity1->Draw(camera->getViewMatrix(), camera->getProjectionMatrix(),deviceContext);
 
 

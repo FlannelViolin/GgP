@@ -9,10 +9,12 @@ class Material
 private: 
 	SimplePixelShader* pShade;
 	SimpleVertexShader* vShade;
+	void updateShaders();
 public:
 
 	SimplePixelShader* getPixelShader();
 	SimpleVertexShader* getVertexShader();
+	
 	Material(SimplePixelShader* p, SimpleVertexShader* v);
 	~Material();
 };

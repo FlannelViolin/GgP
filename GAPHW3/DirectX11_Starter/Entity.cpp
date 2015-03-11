@@ -74,6 +74,9 @@ void Entity::setMaterial(Material* mat){
 	material = mat;
 }
 
+Material* Entity::getMaterial(){
+	return material;
+}
 
 
 boolean Entity::updateWorldMatrix(){
@@ -106,7 +109,9 @@ boolean Entity::Draw(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix, ID3D11Devi
 
 	material->getVertexShader()->SetShader();
 
+
 	material->getPixelShader()->SetShader();
+
 	/*ctx->UpdateSubresource(
 		vsConstantBuffer,
 		0,
@@ -138,3 +143,4 @@ boolean Entity::Draw(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix, ID3D11Devi
 
 	return true;
 }
+

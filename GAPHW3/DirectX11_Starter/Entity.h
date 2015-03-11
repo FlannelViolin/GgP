@@ -39,7 +39,7 @@ public:
 	void setRotation(float x, float y, float z);
 	void setScale(float x, float y, float z);
 	void setMaterial(Material* mat);
-
+	Material* getMaterial();
 
 	// pass in values, and positions, id love to pass in a reference to the vector to be changed.
 	void changePositionValues(float* values, int* positions);
@@ -48,6 +48,8 @@ public:
 
 	// test this, pass in a vector with a getter value, 
 	void changeVectorValues(XMFLOAT3& vect, float* values, int* positions);
+
+	
 
 	boolean updateWorldMatrix();
 
