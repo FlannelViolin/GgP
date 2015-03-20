@@ -24,6 +24,8 @@
 #include <Windows.h>
 #include <d3dcompiler.h>
 #include "MyDemoGame.h"
+#include "WICTextureLoader.h"
+
 
 #pragma region Win32 Entry Point (WinMain)
 
@@ -103,10 +105,10 @@ bool MyDemoGame::Init()
 	// Set up world matrix
 	// In an actual game, each object will need one of these and they should
 	//  update when/if the object moves (every frame)
-	XMMATRIX W = XMMatrixIdentity();
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(W));
+	XMMATRIX W = DirectX::XMMatrixIdentity();
+	XMStoreFloat4x4(&worldMatrix, DirectX::XMMatrixTranspose(W));
 
-	directionalLight1 = { XMFLOAT4(0.1, 0.1, 0.1, 1), XMFLOAT4(.7, 0, 0, 1), XMFLOAT3(1, -1, 0) };
+	directionalLight1 = { XMFLOAT4(0.1, 0.1, 0.1, 1), XMFLOAT4(.7,.7, .7, 1), XMFLOAT3(0, 0, 1) };
 	directionalLight2 = { XMFLOAT4(0.1, 0.1, 0.1, 1), XMFLOAT4(0, 0,.7, 1), XMFLOAT3(-1, 0, 1) };
 
 	// Successfully initialized
@@ -158,6 +160,9 @@ void MyDemoGame::CreateGeometryBuffers()
 	/*mesh2 = new Mesh(vertices2, 3, indices1, 3, device);
 	/*mesh3 = new Mesh(vertices3, 3, indices1, 3, device);*/
 
+
+	
+
 	XMFLOAT3 ones = XMFLOAT3(1.0f, 1.0f, 1.0f);
 	XMFLOAT3 zeroes = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 tryScale = XMFLOAT3(1.5f, 1.5f, 0.0f);
@@ -172,7 +177,26 @@ void MyDemoGame::CreateGeometryBuffers()
 
 	vShader->LoadShaderFile(L"../Debug/VertexShader.cso");
 
-	Entity1->setMaterial(new Material(pShader, vShader));
+	
+
+	ID3D11ShaderResourceView* srvPointer = NULL;
+	DirectX::CreateWICTextureFromFile(device, deviceContext, L"../Debug/iron_texture.jpg", 0, &srvPointer);
+	
+	ID3D11SamplerState* samplePointer;
+	D3D11_SAMPLER_DESC description;
+	ZeroMemory(&description, sizeof(description));
+	description.AddressU= D3D11_TEXTURE_ADDRESS_WRAP;
+	description.AddressV= D3D11_TEXTURE_ADDRESS_WRAP;
+	description.AddressW= D3D11_TEXTURE_ADDRESS_WRAP;
+	description.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	description.MaxLOD = D3D11_FLOAT32_MAX;
+
+
+	device->CreateSamplerState(&description, &samplePointer);
+
+
+
+	Entity1->setMaterial(new Material(pShader, vShader,srvPointer,samplePointer));
 
 	/*
 	Entity2 = new Entity(mesh2, zeroes, zeroes, ones);
@@ -356,10 +380,11 @@ void MyDemoGame::DrawScene()
 
 	vShader->SetShader(true);
 	*/
-	directionalLight1.Direction.y = sin(timer.TotalTime());
-	directionalLight2.Direction.x = sin(timer.TotalTime())*7;
+	//directionalLight1.Direction.y = sin(timer.TotalTime());
+	//directionalLight2.Direction.x = sin(timer.TotalTime())*7;
 	Entity1->getMaterial()->getPixelShader()->SetData("light1", &directionalLight1, sizeof(DirectionalLight));
 	Entity1->getMaterial()->getPixelShader()->SetData("light2", &directionalLight2, sizeof(DirectionalLight));
+
 
 	Entity1->Draw(camera->getViewMatrix(), camera->getProjectionMatrix(),deviceContext);
 

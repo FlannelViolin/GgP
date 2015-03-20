@@ -29,9 +29,9 @@ Entity::Entity(Mesh * m, XMFLOAT3 p, XMFLOAT3 r, XMFLOAT3 s){
 	XMMATRIX w = scaleMatrix * rotMatrix * transMatrix;
 	*/
 	// just kidding w is the indentity matrix
-	XMMATRIX w = XMMatrixIdentity();
+	XMMATRIX w = DirectX::XMMatrixIdentity();
 
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(w));
+	XMStoreFloat4x4(&worldMatrix, DirectX::XMMatrixTranspose(w));
 	
 	
 
@@ -39,10 +39,10 @@ Entity::Entity(Mesh * m, XMFLOAT3 p, XMFLOAT3 r, XMFLOAT3 s){
 
 Entity::Entity(Mesh * m){
 	mesh = m;
-	XMMATRIX w = XMMatrixIdentity();
+	XMMATRIX w = DirectX::XMMatrixIdentity();
 
 
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(w));
+	XMStoreFloat4x4(&worldMatrix, DirectX::XMMatrixTranspose(w));
 }
 
 Entity::~Entity()
@@ -80,19 +80,19 @@ Material* Entity::getMaterial(){
 
 
 boolean Entity::updateWorldMatrix(){
-	XMMATRIX transMatrix = XMMatrixTranslation(pos.x, pos.y, pos.z);
+	XMMATRIX transMatrix = DirectX::XMMatrixTranslation(pos.x, pos.y, pos.z);
 
-	XMMATRIX rotMatrixX = XMMatrixRotationX(rot.x);
-	XMMATRIX rotMatrixY = XMMatrixRotationY(rot.y);
-	XMMATRIX rotMatrixZ = XMMatrixRotationZ(rot.z);
+	XMMATRIX rotMatrixX = DirectX::XMMatrixRotationX(rot.x);
+	XMMATRIX rotMatrixY = DirectX::XMMatrixRotationY(rot.y);
+	XMMATRIX rotMatrixZ = DirectX::XMMatrixRotationZ(rot.z);
 
-	XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+	XMMATRIX scaleMatrix = DirectX::XMMatrixScaling(scale.x, scale.y, scale.z);
 
 	XMMATRIX rotMatrix = rotMatrixX * rotMatrixY * rotMatrixZ;
 
 	XMMATRIX w = scaleMatrix * rotMatrix * transMatrix;
 	
-	XMStoreFloat4x4(&worldMatrix, XMMatrixTranspose(w));
+	XMStoreFloat4x4(&worldMatrix, DirectX::XMMatrixTranspose(w));
 
 	return true;
 }
@@ -107,9 +107,11 @@ boolean Entity::Draw(XMFLOAT4X4 viewMatrix, XMFLOAT4X4 projectMatrix, ID3D11Devi
 	material->getVertexShader()->SetMatrix4x4("view", viewMatrix);
 	material->getVertexShader()->SetMatrix4x4("projection", projectMatrix);
 
+	material->getPixelShader()->SetSamplerState("basicSampler", material->getSampleState());
+	material->getPixelShader()->SetShaderResourceView("diffuseTexture", material->getShaderView());
+
 	material->getVertexShader()->SetShader();
-
-
+	
 	material->getPixelShader()->SetShader();
 
 	/*ctx->UpdateSubresource(

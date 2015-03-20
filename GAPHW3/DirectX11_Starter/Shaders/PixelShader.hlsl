@@ -5,6 +5,7 @@ struct VertexToPixel
 {
 	float4 position		: SV_POSITION;
 	float3 normal		: NORMAL;
+	float2 uv			: TEXCOORD;
 
 };
 
@@ -34,11 +35,15 @@ float4 lightCalc(float3 normal, DirectionalLight l){
 		//   vertices of the triangle
 		return float4(totalColor);
 }
+
+Texture2D diffuseTexture : register(t0);
+SamplerState basicSampler : register(s0);
 // Entry point for this pixel shader
 float4 main(VertexToPixel input) : SV_TARGET
 {
 	input.normal = normalize(input.normal);
-	
-	return lightCalc(input.normal,light1)+lightCalc(input.normal,light2);
+	float4 lightOutput = lightCalc(input.normal, light1);// +lightCalc(input.normal, light2);
+		float4 surfaceColor = diffuseTexture.Sample(basicSampler, input.uv);
+		return lightOutput *surfaceColor;
 }
 
